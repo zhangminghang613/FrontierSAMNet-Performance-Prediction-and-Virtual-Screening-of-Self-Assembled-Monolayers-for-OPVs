@@ -1,0 +1,50 @@
+{
+  "model_path": "models\\frontier_sam_net.pt",
+  "input_csv": "data\\processed\\sam_clean.csv",
+  "split": "test",
+  "seed": 20260517,
+  "repeats": 100,
+  "device": "cuda",
+  "test_rows": 79,
+  "test_sam_groups": 20,
+  "test_active_layers": 27,
+  "numeric_context_features": [
+    "Substrate_Work_Function",
+    "SAM_Solution_Concentration(mM)",
+    "Soaking",
+    "Spin_Coating",
+    "Soak_Time",
+    "Spin_Coating_Time(s)",
+    "Spin_Coating_Speed(rpm)",
+    "Annealing",
+    "Initial_Annealing_Temperature_for_SAM (°C)",
+    "Post-washing_Annealing_Temperature(°C)",
+    "Initial_Annealing_Time_for_SAM(min)",
+    "Post-washing_Annealing_Time(min)",
+    "UV-Ozone_Treatment_Time(min)"
+  ],
+  "categorical_context_features": [
+    "Substrate_Type",
+    "SAM_Solvent",
+    "Active_Layer"
+  ],
+  "descriptor_count": 217,
+  "fingerprint_bit_count": 1024,
+  "fixed_mask_semantics": {
+    "numeric_context_zero": "training-mean reference in standardized space",
+    "categorical_context_zero": "reserved unknown/padding embedding index",
+    "descriptor_zero": "training-mean reference in standardized space",
+    "fingerprint_zero": "all bits absent"
+  },
+  "interaction_mse_mean": -0.29192930920724225,
+  "interaction_mse_q025": -2.810396539474598,
+  "interaction_mse_q975": 2.5887646110537403,
+  "outputs": {
+    "metrics": "results\\tables\\frontiersamnet_context_structure_occlusion_metrics.csv",
+    "summary": "results\\tables\\frontiersamnet_context_structure_occlusion_summary.csv",
+    "predictions": "results\\tables\\frontiersamnet_context_structure_occlusion_predictions.csv",
+    "interaction": "results\\tables\\frontiersamnet_context_structure_interaction.csv",
+    "permutation_audit": "results\\tables\\frontiersamnet_context_structure_permutation_audit.csv"
+  },
+  "interpretation_boundary": "Fixed-model occlusion and permutation quantify predictive sensitivity; they do not establish causal feature contributions or retrained-model capacity."
+}

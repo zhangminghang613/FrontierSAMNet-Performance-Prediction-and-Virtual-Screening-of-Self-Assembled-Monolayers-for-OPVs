@@ -1,0 +1,45 @@
+{
+  "rows": 541,
+  "unique_smiles": 130,
+  "unique_sam_group": 130,
+  "unique_names": 130,
+  "unique_doi": 81,
+  "split_counts": {
+    "train": 382,
+    "val": 80,
+    "test": 79
+  },
+  "split_group_counts": {
+    "train": 90,
+    "val": 20,
+    "test": 20
+  },
+  "target_mean_by_split": {
+    "train": {
+      "pce": 16.06113612565445,
+      "voc": 0.8443803664921465,
+      "jsc": 25.39210052356021,
+      "ff": 73.33321465968586
+    },
+    "val": {
+      "pce": 16.38855,
+      "voc": 0.84441375,
+      "jsc": 25.473298749999998,
+      "ff": 73.97675000000001
+    },
+    "test": {
+      "pce": 16.27206329113924,
+      "voc": 0.8409911392405063,
+      "jsc": 25.02962151898734,
+      "ff": 74.06672151898735
+    }
+  },
+  "feature_counts": {
+    "id": 4,
+    "targets": 4,
+    "bits": 1024,
+    "descriptors": 217,
+    "numeric_context": 13,
+    "categorical_context": 3
+  }
+}

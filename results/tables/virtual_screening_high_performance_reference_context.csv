@@ -1,0 +1,2 @@
+﻿Substrate_Work_Function,SAM_Solution_Concentration(mM),Soaking,Spin_Coating,Soak_Time,Spin_Coating_Time(s),Spin_Coating_Speed(rpm),Annealing,Initial_Annealing_Temperature_for_SAM (°C),Post-washing_Annealing_Temperature(°C),Initial_Annealing_Time_for_SAM(min),Post-washing_Annealing_Time(min),UV-Ozone_Treatment_Time(min),Substrate_Type,SAM_Solvent,Active_Layer,_reference_context_source,_reference_context_pce_q75
+4.7,0.95,0.0,1.0,0.0,30.0,3000.0,1.0,100.0,20.0,10.0,0.0,20.0,ITO,EtOH,PM6:BTP-eC9,train_upper_quartile_pce,18.6

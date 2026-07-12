@@ -1,0 +1,60 @@
+{
+  "seed": 20260517,
+  "input_file": "con_data.xlsx",
+  "sheet_name": "Sheet1",
+  "target_columns": {
+    "pce": "PCE（%）",
+    "voc": "VOC（V）",
+    "jsc": "JSC(mA·cm⁻²)",
+    "ff": "FF(%)"
+  },
+  "id_columns": ["name", "SMILES", "doi"],
+  "split": {
+    "group_column": "sam_group",
+    "test_fraction": 0.15,
+    "val_fraction": 0.15,
+    "n_trials": 2000
+  },
+  "external_data": {
+    "enabled": true,
+    "max_molecules": 200000,
+    "urls": [
+      "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/qm9.csv",
+      "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/bbbp.csv",
+      "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/hiv.csv"
+    ]
+  },
+  "model": {
+    "max_atoms": 128,
+    "max_smiles_length": 220,
+    "hidden_dim": 256,
+    "graph_layers": 6,
+    "smiles_layers": 6,
+    "tabular_layers": 3,
+    "fusion_layers": 4,
+    "heads": 8,
+    "experts": 4,
+    "dropout": 0.12,
+    "stochastic_depth": 0.08
+  },
+  "training": {
+    "device": "auto",
+    "batch_size": 64,
+    "pretrain_batch_size": 256,
+    "epochs": 240,
+    "pretrain_epochs": 40,
+    "smoke_epochs": 3,
+    "learning_rate": 0.00035,
+    "pretrain_learning_rate": 0.00045,
+    "weight_decay": 0.0001,
+    "patience": 40,
+    "gradient_clip": 1.0,
+    "mc_dropout_passes": 48,
+    "num_workers": 0
+  },
+  "figures": {
+    "style": "nature",
+    "dpi": 450,
+    "formats": ["png", "pdf"]
+  }
+}

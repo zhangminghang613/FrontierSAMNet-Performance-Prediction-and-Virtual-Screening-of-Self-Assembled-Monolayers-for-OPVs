@@ -1,0 +1,3 @@
+subset,n,concentration_min,concentration_median,concentration_95pct,concentration_99pct,concentration_max
+raw_non_missing,466,0.363,1.09,3.8175,8.568000000000094,25.0
+clean_0_to_100_mM,466,0.363,1.09,3.8175,8.568000000000094,25.0
