@@ -102,11 +102,7 @@ The main parameters are centralized in `config.yaml`, including:
 - Number of training epochs, learning rate, early stopping, and gradient clipping
 - Number of MC Dropout passes
 
-Although the file extension is `.yaml`, the current content uses a JSON-compatible format and is read as JSON by the project code. Valid JSON syntax must be preserved when making changes.
-
 ## Complete Workflow
-
-All commands should be executed from the project root directory.
 
 ### 1. Data Cleaning and Group-Based Splitting
 
@@ -145,8 +141,6 @@ python 03_pretrain_molecular_encoder.py --smoke
 ```powershell
 python 04_train_multimodal_model.py
 ```
-
-If `models/smiles_pretrainer.pt` exists, the training script will automatically load the pretrained SMILES encoder weights. The main model can still be trained if the file does not exist.
 
 Quick test:
 
@@ -209,8 +203,6 @@ Run model inference and candidate ranking:
 ```powershell
 python 10_virtual_sam_screening.py
 ```
-
-If `data/virtual_sam_library.csv` exists, the code uses this candidate library preferentially; otherwise, candidates are generated using built-in rules. The screening results include the predicted mean, calibrated uncertainty, lower confidence bound at twice the standard deviation, nearest Tanimoto similarity to the training set, applicability domain flag, and design rule score.
 
 ### 11. Fixed-Model Occlusion and Permutation Analysis
 
