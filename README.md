@@ -49,9 +49,9 @@ The three branches are integrated through a gated fusion module, after which a m
 ├── 06_evaluate_models.py
 ├── 07_interpretability.py
 ├── 08_candidate_screening.py
-├── 09_fragment_analysis.py
-├── 10_virtual_sam_screening.py
-├── 11_frontiersamnet_context_structure_occlusion.py
+├── 09_frontiersamnet_context_structure_occlusion.py
+├── 10_fragment_analysis.py
+├── 11_virtual_sam_screening.py
 ├── sam_core.py
 ├── config.yaml
 ├── con_data.xlsx
@@ -186,34 +186,34 @@ python 07_interpretability.py
 
 `08_candidate_screening.py` aggregates existing predictions by SAM and ranks them according to the lower bound at twice the uncertainty.
 
-### 9. Real SAM Fragment and Design Rule Analysis
-
-Run the fragment and design rule analysis:
-
-```powershell
-python 09_fragment_analysis.py
-```
-
-This workflow includes SMARTS/BRICS fragment analysis, descriptor shifts, molecular space analysis, and representative structures.
-
-### 10. Virtual SAM Screening
-
-Run model inference and candidate ranking:
-
-```powershell
-python 10_virtual_sam_screening.py
-```
-
-### 11. Fixed-Model Occlusion and Permutation Analysis
+### 9. Fixed-Model Occlusion and Permutation Analysis
 
 Generate occlusion, permutation, and interaction statistics tables:
 
 ```powershell
-python 11_frontiersamnet_context_structure_occlusion.py
+python 09_frontiersamnet_context_structure_occlusion.py
 ```
 
 By default, 100 permutations are performed on the test set. The parameters can be adjusted as follows:
 
 ```powershell
-python 11_frontiersamnet_context_structure_occlusion.py --repeats 20 --split test
+python 09_frontiersamnet_context_structure_occlusion.py --repeats 20 --split test
+```
+
+### 10. Real SAM Fragment and Design Rule Analysis
+
+Run the fragment and design rule analysis:
+
+```powershell
+python 10_fragment_analysis.py
+```
+
+This workflow includes SMARTS/BRICS fragment analysis, descriptor shifts, molecular space analysis, and representative structures.
+
+### 11. Virtual SAM Screening
+
+Run model inference and candidate ranking:
+
+```powershell
+python 11_virtual_sam_screening.py
 ```
