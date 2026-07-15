@@ -1,6 +1,6 @@
-# FrontierSAMNet: Performance Prediction and Virtual Screening of Self-Assembled Monolayers for OPVs
+# FrontierSAMNet: Performance Prediction and Virtual Screening of Self-Assembled Monolayers for Organic Photovoltaics
 
-This project is designed for research on self-assembled monolayer (SAM) materials for organic photovoltaics (OPVs). It provides a complete workflow covering raw experimental data cleaning, group-based splitting, molecular representation pretraining, multimodal multi-task modeling, prediction and uncertainty calibration, structural pattern analysis, and virtual candidate screening.
+This project is designed for research on self-assembled monolayer (SAM) materials for organic photovoltaics (OPVs). It provides a complete workflow covering raw experimental data cleaning, group-based dataset splitting by SAM, molecular representation pretraining, multimodal multi-task modeling, performance prediction, uncertainty calibration, structural pattern analysis, and virtual candidate screening.
 
 The model simultaneously predicts four photovoltaic performance metrics:
 
@@ -25,17 +25,17 @@ The current `data/processed/sam_clean.csv` contains:
 | Numerical process features | 13 |
 | Categorical process features | 3 |
 
-The data are split by `sam_group` to prevent the same SAM from leaking across the training, validation, and test sets.
+The data are split by `sam_group` to prevent the same SAM from appearing simultaneously in the training, validation, and test sets, thereby reducing the risk of structural leakage.
 
 ## Model Architecture
 
-The core model, `FrontierSAMNet`, is defined in `sam_core.py` and contains three input branches:
+The core model, `FrontierSAMNet`, is defined in `sam_core.py` and consists of three input branches:
 
-1. Molecular graph branch: GIN modules and a Transformer encode the atomic graph structure.
-2. SMILES branch: a Transformer encodes SMILES sequences and can load molecular pretraining weights.
+1. Molecular graph branch: uses GIN modules and a Transformer to encode the atomic graph structure.
+2. SMILES branch: uses a Transformer to encode SMILES sequences and can load molecular pretraining weights.
 3. Tabular branch: encodes RDKit descriptors, Morgan fingerprints, numerical process variables, and categorical process variables.
 
-The three branches are integrated through a gated fusion module, after which a multi-expert prediction head simultaneously outputs PCE, VOC, JSC, and FF. During prediction, MC Dropout is used to estimate uncertainty, and the validation set is used to calibrate the uncertainty scale.
+The three branches are integrated through a gated fusion module, followed by a multi-expert prediction head that simultaneously outputs PCE, VOC, JSC, and FF. During prediction, MC Dropout is used to estimate uncertainty, and the validation set is used to calibrate the uncertainty scale.
 
 ## Project Structure
 
@@ -47,11 +47,12 @@ The three branches are integrated through a gated fusion module, after which a m
 ├── 04_train_multimodal_model.py
 ├── 05_predict.py
 ├── 06_evaluate_models.py
-├── 07_interpretability.py
+├── 07_frontiersamnet_module_ablation.py
 ├── 08_candidate_screening.py
-├── 09_frontiersamnet_context_structure_occlusion.py
-├── 10_fragment_analysis.py
-├── 11_virtual_sam_screening.py
+├── 09_interpretability.py
+├── 10_frontiersamnet_context_structure_occlusion.py
+├── 11_fragment_analysis.py
+├── 12_virtual_sam_screening.py
 ├── sam_core.py
 ├── config.yaml
 ├── con_data.xlsx
@@ -59,6 +60,7 @@ The three branches are integrated through a gated fusion module, after which a m
 │   ├── raw/
 │   └── processed/
 ├── models/
+│   └── module_ablation/
 └── results/
     ├── figures/
     └── tables/
@@ -77,9 +79,7 @@ The three branches are integrated through a gated fusion module, after which a m
 | scikit-learn | >= 1.2 |
 | openpyxl | >= 3.1 |
 
-
-
-You can create the environment as follows:
+You can create the runtime environment with the following commands:
 
 ```powershell
 conda create -n samwin "python>=3.10" -y
@@ -100,7 +100,7 @@ The main parameters are centralized in `config.yaml`, including:
 - External molecular pretraining data sources
 - Model dimensions, number of layers, number of attention heads, and number of experts
 - Number of training epochs, learning rate, early stopping, and gradient clipping
-- Number of MC Dropout passes
+- Number of MC Dropout forward passes
 
 ## Complete Workflow
 
@@ -112,7 +112,7 @@ python 01_prepare_data.py
 
 ### 2. Prepare Molecular Pretraining Data
 
-Download the datasets specified in the configuration online:
+Download the datasets specified in the configuration file:
 
 ```powershell
 python 02_download_pretrain_data.py
@@ -168,7 +168,7 @@ python 05_predict.py --disable-uncertainty-calibration
 python 06_evaluate_models.py
 ```
 
-The outputs include baseline model metrics, baseline predictions, and a table of FrontierSAMNet predictions for all splits.
+The outputs include baseline model metrics, baseline predictions, and a table of FrontierSAMNet predictions for all data splits.
 
 Quick test:
 
@@ -176,44 +176,60 @@ Quick test:
 python 06_evaluate_models.py --smoke
 ```
 
-### 7. Feature and Process Interpretation
+### 7. FrontierSAMNet Module Ablation Training
 
 ```powershell
-python 07_interpretability.py
+python 07_frontiersamnet_module_ablation.py
 ```
 
-### 8. Candidate Aggregation Script
+The script trains three ablation variants: a tabular-branch-only model, a graph-and-SMILES-branch-only model, and a model without adaptive gating.
 
-`08_candidate_screening.py` aggregates existing predictions by SAM and ranks them according to the lower bound at twice the uncertainty.
+Common parameters:
 
-### 9. Fixed-Model Occlusion and Permutation Analysis
+```powershell
+python 07_frontiersamnet_module_ablation.py --smoke
+python 07_frontiersamnet_module_ablation.py --variants tabular_only,graph_smiles_only
+python 07_frontiersamnet_module_ablation.py --mc-dropout-passes 48
+```
+
+### 8. Candidate Material Aggregation and Ranking
+
+`08_candidate_screening.py` aggregates existing prediction results by SAM name and SMILES and ranks the candidate materials according to the twice-the-uncertainty lower bound for PCE, `pce_lcb_2sigma`.
+
+### 9. Feature and Process Condition Interpretation
+
+```powershell
+python 09_interpretability.py
+```
+
+### 10. Fixed-Model Occlusion, Permutation, and Interaction Analysis
 
 Generate occlusion, permutation, and interaction statistics tables:
 
 ```powershell
-python 09_frontiersamnet_context_structure_occlusion.py
+python 10_frontiersamnet_context_structure_occlusion.py
 ```
 
-By default, 100 permutations are performed on the test set. The parameters can be adjusted as follows:
+By default, 100 permutations are performed on the test set. This can be adjusted using the following parameters:
 
 ```powershell
-python 09_frontiersamnet_context_structure_occlusion.py --repeats 20 --split test
+python 10_frontiersamnet_context_structure_occlusion.py --repeats 20 --split test
 ```
 
-### 10. Real SAM Fragment and Design Rule Analysis
+### 11. Real SAM Fragment and Design Rule Analysis
 
 Run the fragment and design rule analysis:
 
 ```powershell
-python 10_fragment_analysis.py
+python 11_fragment_analysis.py
 ```
 
-This workflow includes SMARTS/BRICS fragment analysis, descriptor shifts, molecular space analysis, and representative structures.
+This workflow includes SMARTS/BRICS fragment analysis, descriptor shifts, molecular space analysis, and representative structure screening.
 
-### 11. Virtual SAM Screening
+### 12. Virtual SAM Screening
 
 Run model inference and candidate ranking:
 
 ```powershell
-python 11_virtual_sam_screening.py
+python 12_virtual_sam_screening.py
 ```
